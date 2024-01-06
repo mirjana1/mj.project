@@ -1,0 +1,149 @@
+reate database project1;
+use project1;
+
+create table job (
+date DATE not null,
+time TIME not null,
+employee_name varchar (100) not null primary key,
+JOB_TITLE 	varchar (50) not null,
+job_category varchar (50) not null,
+salary_currency varchar (10),
+salary int not null,
+salary_in_usd int not null,
+employee_residence varchar (50) not null,
+experience_level varchar (50) not null,
+employment_type varchar (50) not null,
+work_setting varchar (50) not null,
+company_location varchar (50) not null,
+company_size varchar (5),
+bonus decimal (10,2));
+
+ALTER TABLE JOBS_analysis
+modify column salary_currency varchar(10);
+
+select  * from `jobs-analitics`
+
+rename table `jobs-analitics` to jobs_analysis;
+
+select * from jobs_analysis;
+
+
+------------1 •	Add a new column named time_of_day to give insight of total salaries in the Morning, Afternoon and Evening. 
+This will help answer the question on which part of the day most salaries are paid out. 
+
+select * from jobs_analysis;
+select time,
+(case when 'time' between "00:00:00" and "12:00:00" then "morning"
+when 'time' between "12:01:00" and "16:00:00" then "morning"
+else "evening" end) as time_of_date from jobs_analysis;
+
+alter table jobs_analysis
+add column time_of_day varchar (20);
+
+update jobs_analysis
+set time_of_day= (case when 'time' between "00:00:00" and "12:00:00" then "morning"
+when 'time' between "12:01:00" and "16:00:00" then "morning"
+else "evening" end);
+
+-------------	2. Add a new column named day_name that contains
+ the extracted days of the week on which the given transaction took place (Mon, Tue, Wed, Thur, Fri). 
+ 
+select * from jobs_analysis;
+select date from jobs_analysis;
+
+select dayname(date) from jobs_analysis;
+
+alter table jobs_analysis
+add column day_name varchar (15);
+
+update jobs_analysis set day_name=dayname(date);
+
+----------  Add a new column named month_name that contains the extracted months of the year on which the given transaction took place (Jan, Feb, Mar). 
+Help determine which month of the year has the most paid salaries.
+
+select * from jobs_analysis;
+
+select date from jobs_analysis;
+
+select date, 
+monthname(date) from jobs_analysis;
+
+alter table jobs_analysis
+add column month_name varchar (20);
+
+update jobs_analysis
+set month_name = monthname(date);
+
+-------- How many unique company location does the data have?---------
+
+select distinct company_location from jobs_analysis;
+
+------- In which company the individual employee works?
+
+SELECT distinct company_location, employee_name from jobs_analysis;
+
+
+
+----------------	How many unique levels of employment the company supports/requires -------- 
+
+select distinct experience_level from jobs_analysis;
+
+select count(distinct experience_level) from jobs_analysis;
+
+------------- 	What is the most common employment_ type?
+
+select employment_type,
+count(employment_type) from jobs_analysis
+group by employment_type;
+
+---------------- What is the most common job_title? --------------------
+
+select job_title,
+count(job_title) from jobs_analysis
+group by job_title;
+
+---------------- select * from jobs_analysis
+
+
+---------------------- 	What is the total salary by month? -------------- 
+
+select month_name,
+sum(salary) as total_salary
+from jobs_analysis
+group by month_name
+order by total_salary desc;
+
+
+---------------- 	Which employee has the highest salary shown by individual months?------------
+
+select employee_name, month_name,
+sum(salary) as total_salary 
+from jobs_analysis
+group by employee_name, month_name
+order by total_salary desc;
+
+
+------------how many employees with a senior level of employment have a salary greater than 80,000?-----
+
+select employee_name, experience_level,salary from jobs_analysis
+where experience_level="senior"
+having salary>80000
+
+--------------- in which category employees have a higher salary than the average salary?
+
+
+select avg(salary) from jobs_analysis;
+
+
+SELECT job_category,employee_name,
+sum(salary) 
+from jobs_analysis
+group by job_category,employee_name
+having sum(salary)> (select avg(salary)from  jobs_analysis);
+
+-------------- what is the average salary by employment experience?-------
+
+select round(avg(salary), 2), experience_level 
+from jobs_analysis
+group by experience_level
+order by avg(salary) desc;
