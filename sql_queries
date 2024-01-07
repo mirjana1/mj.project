@@ -147,3 +147,12 @@ select round(avg(salary), 2), experience_level
 from jobs_analysis
 group by experience_level
 order by avg(salary) desc;
+
+----------- Number of salaries made in each time of the day per weekday?---------------
+
+select time_of_day,
+count(*) as total_salary
+from jobs_analysis
+where day_name="friday"
+group by time_of_day
+order by total_salary;
