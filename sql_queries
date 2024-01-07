@@ -1,4 +1,4 @@
-reate database project1;
+create database project1;
 use project1;
 
 create table job (
