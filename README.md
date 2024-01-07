@@ -72,3 +72,4 @@ Generic Question
 7.	Which employee has the highest salary shown by individual months?
 8.	In which category do employees have a higher salary than the average salary?
 9.	What is the average salary by employment experience?
+10. Number of salaries made in each time of the day per weekday.
